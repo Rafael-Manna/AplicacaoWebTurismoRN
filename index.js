@@ -3,14 +3,12 @@ import mysql from "mysql2";
 import cors from "cors";
 import dotenv from "dotenv";
 
-// carrega variáveis do .env
 dotenv.config();
 
 const app = express();
 app.use(cors());
-app.use(express.json()); // permite receber JSON no body das requisições
+app.use(express.json());
 
-// conexão com MySQL
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -18,33 +16,16 @@ const db = mysql.createConnection({
   database: process.env.DB_NAME,
 });
 
-// testar conexão
 db.connect((err) => {
-  if (err) {
-    console.error("Erro ao conectar ao banco:", err);
-  } else {
-    console.log("✅ Conectado ao MySQL com sucesso!");
-  }
+  if (err) console.error("Erro ao conectar:", err);
+  else console.log("✅ Conectado ao MySQL!");
 });
 
-// rota teste
 app.get("/", (req, res) => {
   res.send("API Turismo RN funcionando 🚀");
 });
 
-// exemplo de rota para listar pontos turísticos
-app.get("/pontos", (req, res) => {
-  db.query("SELECT * FROM pontos_turisticos", (err, results) => {
-    if (err) {
-      console.error("Erro ao buscar dados:", err);
-      res.status(500).json({ erro: "Erro no servidor" });
-    } else {
-      res.json(results);
-    }
-  });
-});
-
-// exemplo de rota de login (simples)
+// LOGIN
 app.post("/login", (req, res) => {
   const { email, senha } = req.body;
 
@@ -52,13 +33,9 @@ app.post("/login", (req, res) => {
     return res.status(400).json({ sucesso: false, mensagem: "Email e senha são obrigatórios" });
   }
 
-  // 1️⃣ Verifica se o usuário existe
   const sqlSelect = "SELECT * FROM usuarios WHERE email = ?";
   db.query(sqlSelect, [email], (err, results) => {
-    if (err) {
-      console.error("Erro ao buscar usuário:", err);
-      return res.status(500).json({ sucesso: false, mensagem: "Erro no servidor" });
-    }
+    if (err) return res.status(500).json({ sucesso: false, mensagem: "Erro no servidor" });
 
     if (results.length === 0) {
       return res.status(401).json({ sucesso: false, mensagem: "Usuário não encontrado." });
@@ -66,16 +43,12 @@ app.post("/login", (req, res) => {
 
     const usuario = results[0];
 
-    // 2️⃣ Verifica se o usuário está bloqueado
     if (usuario.bloqueado) {
-      return res.status(403).json({ sucesso: false, mensagem: "Conta bloqueada. Contate o administrador." });
+      return res.status(403).json({ sucesso: false, mensagem: "Conta bloqueada." });
     }
 
-    // 3️⃣ Verifica se a senha está correta
     if (senha === usuario.senha) {
-      // ✅ Login bem-sucedido → zera tentativas
-      const resetSql = "UPDATE usuarios SET tentativas_erradas = 0 WHERE id = ?";
-      db.query(resetSql, [usuario.id]);
+      db.query("UPDATE usuarios SET tentativas_erradas = 0 WHERE id = ?", [usuario.id]);
 
       return res.json({
         sucesso: true,
@@ -83,34 +56,129 @@ app.post("/login", (req, res) => {
         nome: usuario.nome,
         tipoConta: usuario.tipo_conta
       });
-    } else {
-      // ❌ Senha incorreta → incrementa tentativas
-      const novasTentativas = usuario.tentativas_erradas + 1;
-
-      if (novasTentativas >= 5) {
-        // 🔒 Bloqueia o usuário
-        const bloquearSql = "UPDATE usuarios SET tentativas_erradas = ?, bloqueado = TRUE WHERE id = ?";
-        db.query(bloquearSql, [novasTentativas, usuario.id]);
-        return res.status(403).json({
-          sucesso: false,
-          mensagem: "Conta bloqueada após 5 tentativas erradas. Contate o administrador."
-        });
-      } else {
-        // ⛔ Só incrementa o contador
-        const updateSql = "UPDATE usuarios SET tentativas_erradas = ? WHERE id = ?";
-        db.query(updateSql, [novasTentativas, usuario.id]);
-
-        return res.status(401).json({
-          sucesso: false,
-          mensagem: `Senha incorreta. Tentativas restantes: ${5 - novasTentativas}`
-        });
-      }
     }
+
+    const novasTentativas = usuario.tentativas_erradas + 1;
+
+    if (novasTentativas >= 5) {
+      db.query(
+        "UPDATE usuarios SET tentativas_erradas = ?, bloqueado = 1 WHERE id = ?",
+        [novasTentativas, usuario.id]
+      );
+      return res.status(403).json({
+        sucesso: false,
+        mensagem: "Conta bloqueada por tentativas erradas."
+      });
+    }
+
+    db.query("UPDATE usuarios SET tentativas_erradas = ? WHERE id = ?", [
+      novasTentativas,
+      usuario.id,
+    ]);
+
+    res.status(401).json({
+      sucesso: false,
+      mensagem: `Senha incorreta. Tentativas restantes: ${5 - novasTentativas}`,
+    });
   });
 });
 
-// inicia o servidor
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+// CRIAR USUÁRIO
+app.post("/criar-usuario", (req, res) => {
+  const { nome, email, senha, tipo_conta } = req.body;
+
+  if (!nome || !email || !senha || !tipo_conta) {
+    return res.status(400).json({ sucesso: false, mensagem: "Dados incompletos." });
+  }
+
+  const sql =
+    "INSERT INTO usuarios (nome, email, senha, tipo_conta) VALUES (?, ?, ?, ?)";
+  db.query(sql, [nome, email, senha, tipo_conta], (erro) => {
+    if (erro) {
+      if (erro.code === "ER_DUP_ENTRY") {
+        return res.status(400).json({ sucesso: false, mensagem: "E-mail já cadastrado." });
+      }
+      return res.status(500).json({ sucesso: false, mensagem: "Erro ao criar usuário." });
+    }
+
+    res.json({ sucesso: true, mensagem: "Usuário criado com sucesso!" });
+  });
 });
+
+// LISTAR USUÁRIOS
+app.get("/usuarios", (req, res) => {
+  db.query(
+    "SELECT id, nome, email, tipo_conta, tentativas_erradas, bloqueado FROM usuarios",
+    (erro, resultado) => {
+      if (erro)
+        return res.status(500).json({ sucesso: false, mensagem: "Erro ao buscar usuários." });
+
+      res.json({ sucesso: true, usuarios: resultado });
+    }
+  );
+});
+
+// REMOVER USUÁRIO
+app.delete("/usuarios/:id", (req, res) => {
+  db.query("DELETE FROM usuarios WHERE id = ?", [req.params.id], (erro) => {
+    if (erro)
+      return res.status(500).json({ sucesso: false, mensagem: "Erro ao remover usuário." });
+
+    res.json({ sucesso: true, mensagem: "Usuário removido com sucesso!" });
+  });
+});
+
+// EDITAR USUÁRIO (AGORA ACEITA SENHA)
+app.put("/usuarios/:id", (req, res) => {
+  const id = req.params.id;
+  const { nome, email, senha, tipo_conta, desbloquear } = req.body;
+
+  let campos = [];
+  let valores = [];
+
+  if (nome !== undefined) {
+    campos.push("nome = ?");
+    valores.push(nome);
+  }
+
+  if (email !== undefined) {
+    campos.push("email = ?");
+    valores.push(email);
+  }
+
+  if (senha !== undefined) {
+    campos.push("senha = ?");
+    valores.push(senha);
+  }
+
+  if (tipo_conta !== undefined) {
+    campos.push("tipo_conta = ?");
+    valores.push(tipo_conta);
+  }
+
+  if (desbloquear === true) {
+    campos.push("tentativas_erradas = 0", "bloqueado = 0");
+  }
+
+  if (campos.length === 0) {
+    return res.status(400).json({
+      sucesso: false,
+      mensagem: "Nenhum campo enviado para atualizar.",
+    });
+  }
+
+  const sql = `UPDATE usuarios SET ${campos.join(", ")} WHERE id = ?`;
+  valores.push(id);
+
+  db.query(sql, valores, (erro) => {
+    if (erro) {
+      console.error(erro);
+      return res.status(500).json({ sucesso: false, mensagem: "Erro ao editar usuário." });
+    }
+
+    res.json({ sucesso: true, mensagem: "Usuário atualizado!" });
+  });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`));

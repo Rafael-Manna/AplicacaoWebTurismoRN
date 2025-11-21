@@ -1,23 +1,104 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Página de Login</title>
- <link rel="stylesheet" href="/login/login.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo</title>
+    <link rel="stylesheet" href="admin.css">
 </head>
 
 <body>
 
-<!-- ====== BARRA SUPERIOR ====== -->
-<div class="top-bar">
-    <div>Controle de Dados - Turismo RN</div>
-    <div class="logos">
-        <img src="../rn1.png" alt="Logo RN">
-        <img src="../uern-logo.png" alt="Logo UERN">
+    <!-- BARRA SUPERIOR -->
+    <div class="top-bar">
+        <span class="title">Controle de Dados - Turismo RN</span>
+
+        <div class="logos">
+            <img src="../rn1.png" alt="Logo RN" class="logo-img">
+            <img src="../uern-logo.png" alt="Logo UERN" class="logo-img">
+        </div>
     </div>
-</div>
-<h1>Teste pagina ADM</h1>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <div class="content">
+
+      <h1>Gerenciamento de Usuários</h1>
+        <div id="baubau">
+
+        <h2>Adicionar novo Usuário</h2>
+        <button id="add-user-button">Adicionar</button>
+
+        <h2>Lista de Usuários</h2>
+        <select id="lista-usuarios"></select><br>
+
+        <button id="edit-user-button">Editar Usuário</button>
+        <button id="remove-user-button">Remover Usuário</button>
+
+        </div>
+    </div>
+
+    <!-- FUNDO ESCURECIDO -->
+    <div id="modal-bg" class="modal-background"></div>
+
+    <!-- MODAL CRIAR -->
+    <div id="modal-criar" class="modal">
+        <h2>Criar Usuário</h2>
+
+        <input id="nome" placeholder="Nome completo">
+        <input id="email" placeholder="Email">
+        <input id="senha" placeholder="Senha">
+
+        <select id="tipo_conta">
+            <option value="usuario">Usuário</option>
+            <option value="admin">Administrador</option>
+        </select>
+
+        <button id="confirmar-criar">Criar</button>
+    </div>
+
+    <!-- MODAL EDITAR -->
+    <div id="modal-editar" class="modal">
+        <h2>Editar Usuário</h2>
+
+        <label>Nome:</label>
+        <div class="edit-row">
+            <input id="edit-nome" placeholder="Nome">
+            <button class="no-edit-btn" id="no-edit-nome">Não alterar</button>
+        </div>
+
+        <label>Email:</label>
+        <div class="edit-row">
+            <input id="edit-email" placeholder="Email">
+            <button class="no-edit-btn" id="no-edit-email">Não alterar</button>
+        </div>
+
+        <label>Senha:</label>
+        <div class="edit-row">
+            <input id="edit-senha" placeholder="Deixar vazio para não alterar" type="password">
+            <button class="no-edit-btn" id="no-edit-senha">Não alterar</button>
+        </div>
+
+        <label>Tipo de Conta:</label>
+        <div class="edit-row">
+            <select id="edit-tipo">
+                <option value="usuario">Usuário</option>
+                <option value="admin">Administrador</option>
+            </select>
+            <button class="no-edit-btn" id="no-edit-tipo">Não alterar</button>
+        </div>
+
+        <label class="checkbox-row"> Desbloquear usuário <input type="checkbox" id="edit-desbloquear"></label><br>
+
+        <button id="salvar-edicao">Salvar Alterações</button>
+    </div>
+
+    <!-- POPUP CONFIRMAÇÃO -->
+    <div id="confirm-popup" class="confirm-popup">
+        <h3>Tem certeza?</h3>
+        <button class="btn-sim" id="confirm-sim">Sim</button>
+        <button class="btn-nao" id="confirm-nao">Não</button>
+    </div>
+
+    <script src="admin.js"></script>
 </body>
 </html>

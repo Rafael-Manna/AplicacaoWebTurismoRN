@@ -1,44 +1,186 @@
-/* ====== BARRA SUPERIOR ====== */
-    .top-bar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        background-color: #0044cc;
-        padding: 15px 40px; /* mais espaço interno */
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        z-index: 1000;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font: bold 30px Arial, sans-serif;
-        color: white;
-        flex-wrap: wrap;
-        box-sizing: border-box;
-    }
+/* ===========================
+   BARRA SUPERIOR
+   =========================== */
 
-    /* ====== LOGOS ====== */
-    .logos {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        gap: 15px;
-        flex-wrap: wrap;
-    }
+.top-bar {
+    
+    width: 100%;
+    background: #005c56;
+    padding: 12px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,.25);
+    color: white;
+    font-weight: bold;
+    flex-wrap: wrap;
+    box-sizing: border-box;
 
-    .logos img {
-        max-height: 70px; /* garante que não ultrapasse a altura da barra */
-        height: auto;
-        width: auto;
-    }
+}
 
-    /* ====== FUNDO ====== */
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        background-color: #f4f6fb;
-        padding-top: 120px; /* espaço suficiente para a barra fixa */
-        overflow-x: hidden;
-    }
+.title {
+    font-size: 22px;
+}
 
-   
+.logo-img {
+    height: 60px;
+}
+
+.logos {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+}
+
+/* ===========================
+   CONTEÚDO
+   =========================== */
+
+body {
+    margin: 0;
+    background: #f4f6fb;
+    font-family: Arial, sans-serif;
+}
+
+.content {
+    padding: 30px;
+}
+
+h1 {
+    font-size: 50px;
+    color: #014642;
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+#baubau {
+    zoom: 1.2;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 280px;
+    margin: 0 auto;
+    box-shadow: 0 0 12px rgba(0,0,0,0.2);
+}
+
+#lista-usuarios {
+    padding: 10px;
+    width: 260px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+button {
+    padding: 10px 16px;
+    background: #005c56;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #003f3a;
+}
+
+/* ===========================
+   MODAIS
+   =========================== */
+
+.modal-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.55);
+    z-index: 900;
+    display: none;
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    width: 350px;
+    padding: 25px;
+    border-radius: 10px;
+    z-index: 999;
+    display: none;
+    box-shadow: 0 0 15px rgba(0,0,0,.3);
+}
+
+.modal input,
+.modal select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin: 10px 0;
+    box-sizing: border-box;
+}
+
+/* BOTÕES “NÃO ALTERAR” */
+
+.edit-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.no-edit-btn {
+    background: #c0392b;
+    padding: 8px 10px;
+    color: white;
+    border-radius: 6px;
+}
+
+.no-edit-btn:hover {
+    background: #9e3024;
+}
+
+.input-disabled {
+    background: #e5e5e5 !important;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.checkbox-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* POPUP CONFIRMAÇÃO */
+
+.confirm-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    width: 320px;
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1001;
+    display: none;
+}
+
+.btn-sim {
+    background: #d62828;
+    padding: 10px;
+    width: 45%;
+    border-radius: 6px;
+}
+
+.btn-nao {
+    background: #005c56;
+    padding: 10px;
+    width: 45%;
+    border-radius: 6px;
+}

@@ -50,7 +50,7 @@ async function botaoClick() {
     // login ok
     const dados = corpo; // já parseado acima
     if (dados && dados.tipoConta === "admin") {
-      window.location.href = "../admin/admin.html";
+      window.location.href = "../homeadm/admin.html";
     } else if (dados && dados.tipoConta === "usuario") {
       window.location.href = "../home/home.html";
     } else {
@@ -75,11 +75,3 @@ function mostrarContaBloqueada(texto) {
   if (aviso) aviso.innerText = "Conta bloqueada. Apenas um administrador pode desbloquear.";
 }
 
-// (opcional) função que o admin pode chamar para re-habilitar via front (só se quiser)
-// function habilitarLocalmente() {
-//   inputEmail.disabled = false;
-//   inputSenha.disabled = false;
-//   if (btnEntrar) btnEntrar.disabled = false;
-//   mensagemErro.innerText = "";
-//   mensagemErro.classList.remove("bloqueado");
-// }
