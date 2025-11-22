@@ -1,44 +1,51 @@
-/* ====== BARRA SUPERIOR ====== */
-    .top-bar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        background-color: #0044cc;
-        padding: 15px 40px; /* mais espaço interno */
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        z-index: 1000;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font: bold 30px Arial, sans-serif;
-        color: white;
-        flex-wrap: wrap;
-        box-sizing: border-box;
-    }
+body {
+    font-family: Arial;
+    margin: 0;
+    background: #f4f6fb;
+}
 
-    /* ====== LOGOS ====== */
-    .logos {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        gap: 15px;
-        flex-wrap: wrap;
-    }
+.top-bar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 15px 40px;
+    background: #01534d;
+    color: white;
+    font-size: 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-    .logos img {
-        max-height: 70px; /* garante que não ultrapasse a altura da barra */
-        height: auto;
-        width: auto;
-    }
+.logos img {
+    height: 60px;
+}
 
-    /* ====== FUNDO ====== */
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        background-color: #f4f6fb;
-        padding-top: 120px; /* espaço suficiente para a barra fixa */
-        overflow-x: hidden;
-    }
+.container {
+    margin: 150px auto;
+    width: 80%;
+    max-width: 900px;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+}
 
-   
+h1 {
+    text-align: center;
+    color: #02403c;
+    margin-bottom: 40px;
+}
+
+button {
+    background: #02665e;
+    padding: 15px 30px;
+    color: white;
+    font-size: 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #024d46;
+}

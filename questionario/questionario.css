@@ -1,0 +1,100 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f4f6fb;
+}
+
+/* ===== TOP BAR ===== */
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #0044cc;
+    padding: 15px 40px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    color: white;
+    font-size: 26px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+}
+
+.logos img {
+    width: 70px;
+    height: auto;
+}
+
+/* ===== CONTAINER ===== */
+.container {
+    width: 90%;
+    max-width: 900px;
+    margin: 150px auto 50px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+
+.container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 34px;
+}
+
+/* ===== LABEL E INPUTS ===== */
+.pergunta-label {
+    font-size: 18px;
+    margin-top: 20px;
+    display: block;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    font-size: 17px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.checkbox-container {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== BOTÃO ENVIAR ===== */
+.btn-enviar {
+    display: block;
+    margin: 40px auto;
+    padding: 15px 40px;
+    background: #0044cc;
+    color: white;
+    font-size: 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn-enviar:hover {
+    background: #0033aa;
+}
+
+#status {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 22px;
+    font-weight: bold;
+}

@@ -9,6 +9,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// =======================================
+// 🔗 CONEXÃO COM BANCO
+// =======================================
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -17,15 +20,20 @@ const db = mysql.createConnection({
 });
 
 db.connect((err) => {
-  if (err) console.error("Erro ao conectar:", err);
+  if (err) console.error("❌ Erro ao conectar:", err);
   else console.log("✅ Conectado ao MySQL!");
 });
 
+// =======================================
+// 🚀 ROTA TESTE
+// =======================================
 app.get("/", (req, res) => {
   res.send("API Turismo RN funcionando 🚀");
 });
 
-// LOGIN
+// =======================================
+// 👤 LOGIN
+// =======================================
 app.post("/login", (req, res) => {
   const { email, senha } = req.body;
 
@@ -83,7 +91,9 @@ app.post("/login", (req, res) => {
   });
 });
 
-// CRIAR USUÁRIO
+// =======================================
+// 🟩 CRIAR USUÁRIO
+// =======================================
 app.post("/criar-usuario", (req, res) => {
   const { nome, email, senha, tipo_conta } = req.body;
 
@@ -105,7 +115,9 @@ app.post("/criar-usuario", (req, res) => {
   });
 });
 
-// LISTAR USUÁRIOS
+// =======================================
+// 📋 LISTAR USUÁRIOS
+// =======================================
 app.get("/usuarios", (req, res) => {
   db.query(
     "SELECT id, nome, email, tipo_conta, tentativas_erradas, bloqueado FROM usuarios",
@@ -118,7 +130,9 @@ app.get("/usuarios", (req, res) => {
   );
 });
 
-// REMOVER USUÁRIO
+// =======================================
+// ❌ REMOVER USUÁRIO
+// =======================================
 app.delete("/usuarios/:id", (req, res) => {
   db.query("DELETE FROM usuarios WHERE id = ?", [req.params.id], (erro) => {
     if (erro)
@@ -128,7 +142,9 @@ app.delete("/usuarios/:id", (req, res) => {
   });
 });
 
-// EDITAR USUÁRIO (AGORA ACEITA SENHA)
+// =======================================
+// ✏ EDITAR USUÁRIO (ACEITA SENHA)
+// =======================================
 app.put("/usuarios/:id", (req, res) => {
   const id = req.params.id;
   const { nome, email, senha, tipo_conta, desbloquear } = req.body;
@@ -136,25 +152,10 @@ app.put("/usuarios/:id", (req, res) => {
   let campos = [];
   let valores = [];
 
-  if (nome !== undefined) {
-    campos.push("nome = ?");
-    valores.push(nome);
-  }
-
-  if (email !== undefined) {
-    campos.push("email = ?");
-    valores.push(email);
-  }
-
-  if (senha !== undefined) {
-    campos.push("senha = ?");
-    valores.push(senha);
-  }
-
-  if (tipo_conta !== undefined) {
-    campos.push("tipo_conta = ?");
-    valores.push(tipo_conta);
-  }
+  if (nome !== undefined) { campos.push("nome = ?"); valores.push(nome); }
+  if (email !== undefined) { campos.push("email = ?"); valores.push(email); }
+  if (senha !== undefined) { campos.push("senha = ?"); valores.push(senha); }
+  if (tipo_conta !== undefined) { campos.push("tipo_conta = ?"); valores.push(tipo_conta); }
 
   if (desbloquear === true) {
     campos.push("tentativas_erradas = 0", "bloqueado = 0");
@@ -180,5 +181,63 @@ app.put("/usuarios/:id", (req, res) => {
   });
 });
 
+// ============================================================
+// 📌 QUESTIONÁRIO — LISTAR PERGUNTAS
+// ============================================================
+app.get("/perguntas", (req, res) => {
+  const sql = "SELECT * FROM questionario_perguntas ORDER BY numero ASC";
+
+  db.query(sql, (erro, resultado) => {
+    if (erro) {
+      console.error("Erro ao carregar perguntas:", erro);
+      return res.status(500).json({ sucesso: false, mensagem: "Erro ao carregar perguntas" });
+    }
+
+    res.json(resultado);
+  });
+});
+
+// ============================================================
+// 📌 SALVAR RESPOSTAS
+// ============================================================
+app.post("/questionario/salvar", (req, res) => {
+  const { id_usuario, respostas } = req.body;
+
+  if (!id_usuario || !respostas || !Array.isArray(respostas)) {
+    return res.status(400).json({ sucesso: false, mensagem: "Dados inválidos." });
+  }
+
+  const sql = "INSERT INTO questionario_respostas (id_usuario, id_pergunta, resposta) VALUES ?";
+  const valores = respostas.map(r => [id_usuario, r.numero, r.resposta]);
+
+  db.query(sql, [valores], (erro) => {
+    if (erro) {
+      console.error("Erro ao salvar respostas:", erro);
+      return res.status(500).json({ sucesso: false });
+    }
+
+    res.json({ sucesso: true, mensagem: "Respostas salvas com sucesso!" });
+  });
+});
+
+// ============================================================
+// 📊 RELATÓRIO ADMIN (OPCIONAL)
+// ============================================================
+app.get("/admin/relatorio", (req, res) => {
+  const sql = "SELECT * FROM vw_respostas_completas ORDER BY id_usuario, numero_pergunta";
+
+  db.query(sql, (erro, resultado) => {
+    if (erro) {
+      console.error("Erro ao carregar relatório:", erro);
+      return res.status(500).json({ sucesso: false });
+    }
+
+    res.json({ sucesso: true, dados: resultado });
+  });
+});
+
+// ============================================================
+// 🚀 INICIAR SERVIDOR
+// ============================================================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`));
