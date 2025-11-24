@@ -1,18 +1,23 @@
+/* ============================
+   BASE
+============================ */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     background-color: #f4f6fb;
 }
 
-/* ===== TOP BAR ===== */
+/* ============================
+   TOP BAR
+============================ */
 .top-bar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    background: #0044cc;
+    background: #005c56;
     padding: 15px 40px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     color: white;
     font-size: 26px;
     font-weight: bold;
@@ -20,36 +25,67 @@ body {
     justify-content: space-between;
     align-items: center;
     z-index: 10;
+     box-sizing: border-box;
 }
 
 .logos img {
-    width: 70px;
-    height: auto;
+    height: 60px;
 }
 
-/* ===== CONTAINER ===== */
+.title {
+    font-size: 22px;
+}
+
+/* ============================
+   BOTÃO VOLTAR
+============================ */
+.btn-voltar-top {
+    background: #004b45;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.2s;
+}
+
+.btn-voltar-top:hover {
+    background: #003b36;
+}
+
+/* ============================
+   CONTAINER DO QUESTIONÁRIO
+============================ */
 .container {
+    margin: 140px auto 60px auto; /* distancia da top bar */
     width: 90%;
-    max-width: 900px;
-    margin: 150px auto 50px auto;
+    max-width: 1100px;          /* IGUAL AO RELATÓRIO */
     background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    padding: 40px;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
 }
 
+/* ============================
+   TÍTULO
+============================ */
 .container h1 {
     text-align: center;
-    margin-bottom: 30px;
-    font-size: 34px;
+    color: #014642;
+    margin-bottom: 35px;
+    font-size: 32px;
 }
 
-/* ===== LABEL E INPUTS ===== */
+/* ============================
+   LABELS E CAMPOS
+============================ */
 .pergunta-label {
     font-size: 18px;
-    margin-top: 20px;
+    margin-top: 25px;
     display: block;
     font-weight: bold;
+    color: #014642;
 }
 
 input[type="text"],
@@ -57,44 +93,70 @@ input[type="number"],
 textarea,
 select {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     margin-top: 8px;
     font-size: 17px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
+    border: 1px solid #c5d1d0;
+    border-radius: 8px;
+    background: #fafcfc;
+    transition: 0.2s;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: #005c56;
+    box-shadow: 0 0 5px rgba(0, 92, 86, 0.3);
 }
 
 textarea {
     resize: vertical;
-    min-height: 80px;
+    min-height: 90px;
 }
 
+/* ============================
+   CHECKBOX
+============================ */
 .checkbox-container {
     margin-top: 10px;
     display: flex;
     flex-direction: column;
+    gap: 8px;
 }
 
-/* ===== BOTÃO ENVIAR ===== */
+.checkbox-container label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ============================
+   BOTÃO ENVIAR
+============================ */
 .btn-enviar {
     display: block;
-    margin: 40px auto;
+    margin: 45px auto 10px auto;
     padding: 15px 40px;
-    background: #0044cc;
+    background: #02665e;
     color: white;
     font-size: 20px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
+    transition: 0.25s;
 }
 
 .btn-enviar:hover {
-    background: #0033aa;
+    background: #014f49;
 }
 
+/* ============================
+   STATUS
+============================ */
 #status {
     text-align: center;
     margin-top: 20px;
-    font-size: 22px;
+    color: #b00000;
     font-weight: bold;
+    font-size: 20px;
 }

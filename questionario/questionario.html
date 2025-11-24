@@ -9,25 +9,22 @@
 
 <body>
 
-    <!-- Barra superior -->
+    <!-- Top Bar com botão voltar -->
     <div class="top-bar">
-        <span class="title">Questionário - Turismo RN</span>
+        <button class="btn-voltar-top" id="voltar-top">⟵ Voltar</button>
+
+        <span class="title">Controle de Dados - Turismo RN</span>
 
         <div class="logos">
-            <img src="../rn1.png" alt="Logo RN" class="logo-img">
-            <img src="../uern-logo.png" alt="Logo UERN" class="logo-img">
+            <img src="../rn1.png" class="logo-img">
+            <img src="../uern-logo.png" class="logo-img">
         </div>
     </div>
 
-    <!-- Conteúdo -->
     <div class="container">
 
         <h1>Formulário do Estabelecimento</h1>
 
-        <!-- ⭐ ADICIONADO PARA O JS FUNCIONAR ⭐ -->
-        <div id="form-container"></div>
-
-        <!-- O JS vai montar tudo aqui dentro -->
         <form id="form-questionario"></form>
 
         <button id="enviar-btn" class="btn-enviar">Enviar Respostas</button>

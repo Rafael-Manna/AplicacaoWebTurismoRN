@@ -1,6 +1,6 @@
-// =============================
-//  CARREGA PERGUNTAS
-// =============================
+//----------------------------------------------------------
+//  CARREGAR PERGUNTAS
+//----------------------------------------------------------
 document.addEventListener("DOMContentLoaded", async () => {
     const form = document.getElementById("form-questionario");
 
@@ -18,28 +18,44 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             let campo;
 
+            // ======================================================
             // ⭐ TEXTO
+            // ======================================================
             if (p.tipo === "texto") {
                 campo = document.createElement("input");
                 campo.type = "text";
+                campo.dataset.id_pergunta = p.id_pergunta;
+                form.appendChild(campo);
+                return;
             }
 
+            // ======================================================
             // ⭐ NÚMERO
-            else if (p.tipo === "numero") {
+            // ======================================================
+            if (p.tipo === "numero") {
                 campo = document.createElement("input");
                 campo.type = "number";
+                campo.dataset.id_pergunta = p.id_pergunta;
+                form.appendChild(campo);
+                return;
             }
 
+            // ======================================================
             // ⭐ TEXTO LONGO
-            else if (p.tipo === "texto_longo") {
+            // ======================================================
+            if (p.tipo === "texto_longo") {
                 campo = document.createElement("textarea");
+                campo.dataset.id_pergunta = p.id_pergunta;
+                form.appendChild(campo);
+                return;
             }
 
-            // ⭐ SELECT (com Outro)
-            else if (p.tipo === "select") {
-
+            // ======================================================
+            // ⭐ SELECT (com campo Outro)
+            // ======================================================
+            if (p.tipo === "select") {
                 campo = document.createElement("select");
-                campo.dataset.numero = p.numero;
+                campo.dataset.id_pergunta = p.id_pergunta;
 
                 const opcoes = p.opcoes.split(";");
 
@@ -50,21 +66,19 @@ document.addEventListener("DOMContentLoaded", async () => {
                     campo.appendChild(opt);
                 });
 
-                // OUTRO (inicia invisível)
                 const outroInput = document.createElement("input");
                 outroInput.type = "text";
                 outroInput.placeholder = "Especifique...";
                 outroInput.classList.add("outro-input");
-                outroInput.dataset.numero = p.numero;
                 outroInput.style.display = "none";
+                outroInput.dataset.id_pergunta = p.id_pergunta;
 
                 campo.addEventListener("change", () => {
-                    if (campo.value.includes("Outro")) {
-                        outroInput.style.display = "block";
-                    } else {
-                        outroInput.style.display = "none";
-                        outroInput.value = "";
-                    }
+                    outroInput.style.display = campo.value.includes("Outro")
+                        ? "block"
+                        : "none";
+
+                    if (outroInput.style.display === "none") outroInput.value = "";
                 });
 
                 form.appendChild(campo);
@@ -72,8 +86,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
 
-            // ⭐ CHECKBOX (com Outro)
-            else if (p.tipo === "checkbox") {
+            // ======================================================
+            // ⭐ CHECKBOX (com campo Outro)
+            // ======================================================
+            if (p.tipo === "checkbox") {
 
                 const container = document.createElement("div");
                 container.classList.add("checkbox-container");
@@ -85,24 +101,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                     check.type = "checkbox";
                     check.value = op;
-                    check.dataset.numero = p.numero;
+                    check.dataset.id_pergunta = p.id_pergunta;
 
                     item.appendChild(check);
                     item.appendChild(document.createTextNode(" " + op));
                     container.appendChild(item);
 
-                    // OUTRO
+                    // Campo OUTRO
                     if (op.includes("Outro")) {
-
                         const outroInput = document.createElement("input");
                         outroInput.type = "text";
                         outroInput.placeholder = "Especifique...";
-                        outroInput.style.display = "none";
                         outroInput.classList.add("outro-input");
-                        outroInput.dataset.numero = p.numero;
+                        outroInput.style.display = "none";
+                        outroInput.dataset.id_pergunta = p.id_pergunta;
 
                         check.addEventListener("change", () => {
-                            outroInput.style.display = check.checked ? "block" : "none";
+                            outroInput.style.display = check.checked
+                                ? "block"
+                                : "none";
 
                             if (!check.checked) outroInput.value = "";
                         });
@@ -115,8 +132,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
 
-            campo.dataset.numero = p.numero;
-            form.appendChild(campo);
         });
 
     } catch {
@@ -125,92 +140,98 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 
-// =============================
+//----------------------------------------------------------
 //  ENVIAR RESPOSTAS
-// =============================
+//----------------------------------------------------------
 document.getElementById("enviar-btn").addEventListener("click", async () => {
 
     const respostas = [];
-    let faltando = []; // ← campos não preenchidos
+    let faltando = [];
 
-    // Inputs simples
-    document.querySelectorAll("#form-questionario [data-numero]").forEach(el => {
+    //------------------------------------------------------
+    // Inputs simples (text, number, textarea)
+    //------------------------------------------------------
+    document.querySelectorAll("#form-questionario [data-id_pergunta]").forEach(el => {
 
         if (el.classList.contains("outro-input")) return;
         if (el.tagName === "SELECT") return;
         if (el.type === "checkbox") return;
 
-        if (el.value.trim() === "") faltando.push(el.dataset.numero);
+        if (el.value.trim() === "") faltando.push(el.dataset.id_pergunta);
 
         respostas.push({
-            numero: el.dataset.numero,
+            id_pergunta: el.dataset.id_pergunta,
             resposta: el.value
         });
     });
 
-    // Selects + Outro
-    document.querySelectorAll("select[data-numero]").forEach(select => {
-        const numero = select.dataset.numero;
-        const outro = document.querySelector(`input.outro-input[data-numero="${numero}"]`);
+    //------------------------------------------------------
+    // SELECT + OUTRO
+    //------------------------------------------------------
+    document.querySelectorAll("select[data-id_pergunta]").forEach(select => {
+        const id = select.dataset.id_pergunta;
+        const outro = document.querySelector(`input.outro-input[data-id_pergunta="${id}"]`);
 
         if (outro && outro.style.display !== "none") {
-            if (outro.value.trim() === "") faltando.push(numero);
+            if (outro.value.trim() === "") faltando.push(id);
 
             respostas.push({
-                numero,
+                id_pergunta: id,
                 resposta: outro.value
             });
         } else {
-            if (select.value.trim() === "") faltando.push(numero);
+            if (select.value.trim() === "") faltando.push(id);
 
             respostas.push({
-                numero,
+                id_pergunta: id,
                 resposta: select.value
             });
         }
     });
 
-    // Checkbox
+    //------------------------------------------------------
+    // CHECKBOXES agrupados
+    //------------------------------------------------------
     const agrupado = {};
 
     document.querySelectorAll("input[type='checkbox']").forEach(c => {
-        const numero = c.dataset.numero;
+        const id = c.dataset.id_pergunta;
 
-        if (!agrupado[numero]) agrupado[numero] = [];
-
-        if (c.checked) agrupado[numero].push(c.value);
+        if (!agrupado[id]) agrupado[id] = [];
+        if (c.checked) agrupado[id].push(c.value);
     });
 
-    // Checkbox Outro
+    // Campo OUTRO do checkbox
     document.querySelectorAll(".outro-input").forEach(outro => {
+        const id = outro.dataset.id_pergunta;
+
         if (outro.style.display !== "none" && outro.value.trim() !== "") {
-            const numero = outro.dataset.numero;
-            if (!agrupado[numero]) agrupado[numero] = [];
-            agrupado[numero].push(outro.value);
+            if (!agrupado[id]) agrupado[id] = [];
+            agrupado[id].push(outro.value);
         }
     });
 
-    Object.keys(agrupado).forEach(numero => {
-        if (agrupado[numero].length === 0) faltando.push(numero);
+    Object.keys(agrupado).forEach(id => {
+        if (agrupado[id].length === 0) faltando.push(id);
 
         respostas.push({
-            numero,
-            resposta: agrupado[numero].join("; ")
+            id_pergunta: id,
+            resposta: agrupado[id].join("; ")
         });
     });
 
-
-    // =============================
-    //  BLOQUEIA ENVIO SE TIVER FALTANDO
-    // =============================
+    //------------------------------------------------------
+    // BLOQUEAR SE FALTAR RESPOSTA
+    //------------------------------------------------------
     if (faltando.length > 0) {
         document.getElementById("status").innerHTML =
-            "⚠️ Responda as perguntas: <b>" + faltando.join(", ") + "</b>";
+            "⚠️ Complete as perguntas: <b>" + faltando.join(", ") + "</b>";
         return;
     }
 
-
-    // Enviar ao servidor
+    //------------------------------------------------------
+    // ENVIO AO SERVIDOR
+    //------------------------------------------------------
     const envio = await fetch("http://localhost:3000/questionario/salvar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -221,5 +242,8 @@ document.getElementById("enviar-btn").addEventListener("click", async () => {
     });
 
     const result = await envio.json();
-    document.getElementById("status").textContent = result.mensagem;
+    document.getElementById("status").innerText = result.mensagem;
+});
+    document.getElementById("voltar-top").addEventListener("click", () => {
+    window.location.href = "../home/home.html";
 });

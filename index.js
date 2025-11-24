@@ -38,31 +38,43 @@ app.post("/login", (req, res) => {
   const { email, senha } = req.body;
 
   if (!email || !senha) {
-    return res.status(400).json({ sucesso: false, mensagem: "Email e senha são obrigatórios" });
+    return res.status(400).json({
+      sucesso: false,
+      mensagem: "Email e senha são obrigatórios"
+    });
   }
 
   const sqlSelect = "SELECT * FROM usuarios WHERE email = ?";
   db.query(sqlSelect, [email], (err, results) => {
-    if (err) return res.status(500).json({ sucesso: false, mensagem: "Erro no servidor" });
+    if (err)
+      return res.status(500).json({ sucesso: false, mensagem: "Erro no servidor" });
 
     if (results.length === 0) {
-      return res.status(401).json({ sucesso: false, mensagem: "Usuário não encontrado." });
+      return res.status(401).json({
+        sucesso: false,
+        mensagem: "Usuário não encontrado."
+      });
     }
 
     const usuario = results[0];
 
     if (usuario.bloqueado) {
-      return res.status(403).json({ sucesso: false, mensagem: "Conta bloqueada." });
+      return res.status(403).json({
+        sucesso: false,
+        mensagem: "Conta bloqueada."
+      });
     }
 
     if (senha === usuario.senha) {
-      db.query("UPDATE usuarios SET tentativas_erradas = 0 WHERE id = ?", [usuario.id]);
+      db.query("UPDATE usuarios SET tentativas_erradas = 0 WHERE id = ?", [
+        usuario.id,
+      ]);
 
       return res.json({
         sucesso: true,
-        id: usuario.id,
+        id_usuario: usuario.id,
         nome: usuario.nome,
-        tipoConta: usuario.tipo_conta
+        tipoConta: usuario.tipo_conta,
       });
     }
 
@@ -106,9 +118,15 @@ app.post("/criar-usuario", (req, res) => {
   db.query(sql, [nome, email, senha, tipo_conta], (erro) => {
     if (erro) {
       if (erro.code === "ER_DUP_ENTRY") {
-        return res.status(400).json({ sucesso: false, mensagem: "E-mail já cadastrado." });
+        return res.status(400).json({
+          sucesso: false,
+          mensagem: "E-mail já cadastrado."
+        });
       }
-      return res.status(500).json({ sucesso: false, mensagem: "Erro ao criar usuário." });
+      return res.status(500).json({
+        sucesso: false,
+        mensagem: "Erro ao criar usuário."
+      });
     }
 
     res.json({ sucesso: true, mensagem: "Usuário criado com sucesso!" });
@@ -123,7 +141,10 @@ app.get("/usuarios", (req, res) => {
     "SELECT id, nome, email, tipo_conta, tentativas_erradas, bloqueado FROM usuarios",
     (erro, resultado) => {
       if (erro)
-        return res.status(500).json({ sucesso: false, mensagem: "Erro ao buscar usuários." });
+        return res.status(500).json({
+          sucesso: false,
+          mensagem: "Erro ao buscar usuários."
+        });
 
       res.json({ sucesso: true, usuarios: resultado });
     }
@@ -136,14 +157,17 @@ app.get("/usuarios", (req, res) => {
 app.delete("/usuarios/:id", (req, res) => {
   db.query("DELETE FROM usuarios WHERE id = ?", [req.params.id], (erro) => {
     if (erro)
-      return res.status(500).json({ sucesso: false, mensagem: "Erro ao remover usuário." });
+      return res.status(500).json({
+        sucesso: false,
+        mensagem: "Erro ao remover usuário."
+      });
 
     res.json({ sucesso: true, mensagem: "Usuário removido com sucesso!" });
   });
 });
 
 // =======================================
-// ✏ EDITAR USUÁRIO (ACEITA SENHA)
+// ✏ EDITAR USUÁRIO
 // =======================================
 app.put("/usuarios/:id", (req, res) => {
   const id = req.params.id;
@@ -152,10 +176,22 @@ app.put("/usuarios/:id", (req, res) => {
   let campos = [];
   let valores = [];
 
-  if (nome !== undefined) { campos.push("nome = ?"); valores.push(nome); }
-  if (email !== undefined) { campos.push("email = ?"); valores.push(email); }
-  if (senha !== undefined) { campos.push("senha = ?"); valores.push(senha); }
-  if (tipo_conta !== undefined) { campos.push("tipo_conta = ?"); valores.push(tipo_conta); }
+  if (nome !== undefined) {
+    campos.push("nome = ?");
+    valores.push(nome);
+  }
+  if (email !== undefined) {
+    campos.push("email = ?");
+    valores.push(email);
+  }
+  if (senha !== undefined) {
+    campos.push("senha = ?");
+    valores.push(senha);
+  }
+  if (tipo_conta !== undefined) {
+    campos.push("tipo_conta = ?");
+    valores.push(tipo_conta);
+  }
 
   if (desbloquear === true) {
     campos.push("tentativas_erradas = 0", "bloqueado = 0");
@@ -164,7 +200,7 @@ app.put("/usuarios/:id", (req, res) => {
   if (campos.length === 0) {
     return res.status(400).json({
       sucesso: false,
-      mensagem: "Nenhum campo enviado para atualizar.",
+      mensagem: "Nenhum campo enviado para atualizar."
     });
   }
 
@@ -174,7 +210,10 @@ app.put("/usuarios/:id", (req, res) => {
   db.query(sql, valores, (erro) => {
     if (erro) {
       console.error(erro);
-      return res.status(500).json({ sucesso: false, mensagem: "Erro ao editar usuário." });
+      return res.status(500).json({
+        sucesso: false,
+        mensagem: "Erro ao editar usuário."
+      });
     }
 
     res.json({ sucesso: true, mensagem: "Usuário atualizado!" });
@@ -182,59 +221,119 @@ app.put("/usuarios/:id", (req, res) => {
 });
 
 // ============================================================
-// 📌 QUESTIONÁRIO — LISTAR PERGUNTAS
+// 📌 LISTAR PERGUNTAS
 // ============================================================
 app.get("/perguntas", (req, res) => {
-  const sql = "SELECT * FROM questionario_perguntas ORDER BY numero ASC";
+  db.query(
+    "SELECT * FROM questionario_perguntas ORDER BY numero ASC",
+    (erro, resultado) => {
+      if (erro) {
+        console.error("Erro ao carregar perguntas:", erro);
+        return res.status(500).json({
+          sucesso: false,
+          mensagem: "Erro ao carregar perguntas"
+        });
+      }
 
-  db.query(sql, (erro, resultado) => {
-    if (erro) {
-      console.error("Erro ao carregar perguntas:", erro);
-      return res.status(500).json({ sucesso: false, mensagem: "Erro ao carregar perguntas" });
+      res.json(resultado);
     }
-
-    res.json(resultado);
-  });
+  );
 });
 
 // ============================================================
-// 📌 SALVAR RESPOSTAS
+// 📌 SALVAR RESPOSTAS (CORRIGIDO DE VERDADE)
 // ============================================================
 app.post("/questionario/salvar", (req, res) => {
   const { id_usuario, respostas } = req.body;
 
-  if (!id_usuario || !respostas || !Array.isArray(respostas)) {
-    return res.status(400).json({ sucesso: false, mensagem: "Dados inválidos." });
+  if (!id_usuario) {
+    return res.status(400).json({
+      sucesso: false,
+      mensagem: "ID do usuário não enviado."
+    });
   }
 
-  const sql = "INSERT INTO questionario_respostas (id_usuario, id_pergunta, resposta) VALUES ?";
-  const valores = respostas.map(r => [id_usuario, r.numero, r.resposta]);
+  if (!Array.isArray(respostas) || respostas.length === 0) {
+    return res.status(400).json({
+      sucesso: false,
+      mensagem: "Nenhuma resposta enviada."
+    });
+  }
 
-  db.query(sql, [valores], (erro) => {
+  // Criar envio
+  const sqlEnvio = "INSERT INTO questionario_envios (id_usuario) VALUES (?)";
+
+  db.query(sqlEnvio, [id_usuario], (erro, resultadoEnvio) => {
     if (erro) {
-      console.error("Erro ao salvar respostas:", erro);
-      return res.status(500).json({ sucesso: false });
+      console.error("Erro ao criar envio:", erro);
+      return res.status(500).json({
+        sucesso: false,
+        mensagem: "Erro ao criar envio."
+      });
     }
 
-    res.json({ sucesso: true, mensagem: "Respostas salvas com sucesso!" });
+    const id_envio = resultadoEnvio.insertId;
+
+    // SALVANDO AGORA COM id_usuario
+    const sqlRespostas = `
+        INSERT INTO questionario_respostas (id_envio, id_usuario, id_pergunta, resposta)
+        VALUES ?
+    `;
+
+    const valores = respostas.map(r => [
+      id_envio,
+      id_usuario,   // ⭐ AGORA VAI JUNTO ⭐
+      r.id_pergunta,
+      r.resposta
+    ]);
+
+    db.query(sqlRespostas, [valores], (erro2) => {
+      if (erro2) {
+        console.error("Erro ao salvar respostas:", erro2);
+        return res.status(500).json({
+          sucesso: false,
+          mensagem: "Erro ao salvar respostas."
+        });
+      }
+
+      res.json({
+        sucesso: true,
+        mensagem: "Respostas enviadas com sucesso!"
+      });
+    });
   });
 });
 
+
 // ============================================================
-// 📊 RELATÓRIO ADMIN (OPCIONAL)
+// 📊 RELATÓRIO COMPLETO (CORRIGIDO)
 // ============================================================
-app.get("/admin/relatorio", (req, res) => {
-  const sql = "SELECT * FROM vw_respostas_completas ORDER BY id_usuario, numero_pergunta";
+app.get("/relatorios", (req, res) => {
+  const sql = `
+      SELECT 
+          e.id_envio,
+          u.id AS id_usuario,
+          u.nome AS usuario,
+          p.pergunta,
+          r.resposta
+      FROM questionario_envios e
+      INNER JOIN usuarios u ON u.id = e.id_usuario
+      INNER JOIN questionario_respostas r ON r.id_envio = e.id_envio
+      INNER JOIN questionario_perguntas p ON p.id_pergunta = r.id_pergunta
+      ORDER BY e.id_envio, p.numero;
+  `;
 
   db.query(sql, (erro, resultado) => {
     if (erro) {
-      console.error("Erro ao carregar relatório:", erro);
-      return res.status(500).json({ sucesso: false });
+      console.error("Erro no relatório:", erro);
+      return res.status(500).json([]);
     }
 
-    res.json({ sucesso: true, dados: resultado });
+    // Agora retorna DIRETO o array
+    res.json(resultado);
   });
 });
+
 
 // ============================================================
 // 🚀 INICIAR SERVIDOR

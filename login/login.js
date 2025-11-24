@@ -1,5 +1,5 @@
 // login.js
-const btnEntrar = document.getElementById("btn-entrar"); // ajuste o id se o botão tiver outro
+const btnEntrar = document.getElementById("btn-entrar");
 const inputEmail = document.getElementById("email");
 const inputSenha = document.getElementById("senha");
 const mensagemErro = document.getElementById("mensagem-erro");
@@ -21,20 +21,15 @@ async function botaoClick() {
       body: JSON.stringify({ email, senha })
     });
 
-    // tenta ler o body (se tiver)
     let corpo;
     try { corpo = await resposta.json(); } catch (e) { corpo = null; }
 
-    // Caso código 403 -> usuário bloqueado (ou outro motivo proibido)
     if (resposta.status === 403) {
-      // Se o servidor retornou mensagem sensata, usa ela; senão, mensagem padrão:
       const msg = (corpo && corpo.mensagem) ? corpo.mensagem : "Acesso proibido.";
-      // Mostra mensagem e bloqueia inputs
       mostrarContaBloqueada(msg);
       return;
     }
 
-    // 401 -> credenciais inválidas
     if (resposta.status === 401) {
       const msg = (corpo && corpo.mensagem) ? corpo.mensagem : "Email ou senha inválidos.";
       mensagemErro.innerText = msg;
@@ -42,13 +37,21 @@ async function botaoClick() {
     }
 
     if (!resposta.ok) {
-      // outros erros
       mensagemErro.innerText = (corpo && corpo.mensagem) ? corpo.mensagem : "Erro ao conectar com o servidor.";
       return;
     }
 
-    // login ok
-    const dados = corpo; // já parseado acima
+    const dados = corpo;
+
+    // ⭐⭐⭐ SALVA ID E NOME NO LOCALSTORAGE ⭐⭐⭐
+    if (dados && dados.id_usuario) {
+      localStorage.setItem("id_usuario", dados.id_usuario);
+      localStorage.setItem("nome_usuario", dados.nome);   // ⭐ ADICIONADO ⭐
+    } else {
+      console.warn("⚠ Login retornou sem id_usuario");
+    }
+
+    // Redirecionamento por tipo de conta
     if (dados && dados.tipoConta === "admin") {
       window.location.href = "../homeadm/admin.html";
     } else if (dados && dados.tipoConta === "usuario") {
@@ -56,22 +59,20 @@ async function botaoClick() {
     } else {
       mensagemErro.innerText = "Tipo de conta desconhecido.";
     }
+
   } catch (e) {
     console.error(e);
     mensagemErro.innerText = "Erro de conexão com o servidor.";
   }
 }
 
-// função que bloqueia inputs e mostra mensagem explícita
 function mostrarContaBloqueada(texto) {
   mensagemErro.innerText = texto;
-  mensagemErro.classList.add("bloqueado"); // estilo opcional
-  // desabilita campos e botão
+  mensagemErro.classList.add("bloqueado");
   inputEmail.disabled = true;
   inputSenha.disabled = true;
   if (btnEntrar) btnEntrar.disabled = true;
-  // opcional: adicionar texto explicativo
+
   const aviso = document.getElementById("aviso-bloqueio");
   if (aviso) aviso.innerText = "Conta bloqueada. Apenas um administrador pode desbloquear.";
 }
-
