@@ -1,6 +1,15 @@
-//----------------------------------------------------------
+//--------------------------------------------------
+//  BLOQUEAR SE NÃO ESTIVER LOGADO
+//--------------------------------------------------
+const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+
+if (!usuario) {
+    window.location.href = "../login/login.html";
+}
+
+//--------------------------------------------------
 //  CARREGAR PERGUNTAS
-//----------------------------------------------------------
+//--------------------------------------------------
 document.addEventListener("DOMContentLoaded", async () => {
     const form = document.getElementById("form-questionario");
 
@@ -18,9 +27,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             let campo;
 
-            // ======================================================
-            // ⭐ TEXTO
-            // ======================================================
+            // ======================
+            //  TEXTO
+            // ======================
             if (p.tipo === "texto") {
                 campo = document.createElement("input");
                 campo.type = "text";
@@ -29,9 +38,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
 
-            // ======================================================
-            // ⭐ NÚMERO
-            // ======================================================
+            // ======================
+            //  NUMERO
+            // ======================
             if (p.tipo === "numero") {
                 campo = document.createElement("input");
                 campo.type = "number";
@@ -40,9 +49,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
 
-            // ======================================================
-            // ⭐ TEXTO LONGO
-            // ======================================================
+            // ======================
+            //  TEXTO LONGO
+            // ======================
             if (p.tipo === "texto_longo") {
                 campo = document.createElement("textarea");
                 campo.dataset.id_pergunta = p.id_pergunta;
@@ -50,9 +59,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
 
-            // ======================================================
-            // ⭐ SELECT (com campo Outro)
-            // ======================================================
+            // ======================
+            //  SELECT (com outro)
+            // ======================
             if (p.tipo === "select") {
                 campo = document.createElement("select");
                 campo.dataset.id_pergunta = p.id_pergunta;
@@ -74,9 +83,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 outroInput.dataset.id_pergunta = p.id_pergunta;
 
                 campo.addEventListener("change", () => {
-                    outroInput.style.display = campo.value.includes("Outro")
-                        ? "block"
-                        : "none";
+                    outroInput.style.display =
+                        campo.value.includes("Outro") ? "block" : "none";
 
                     if (outroInput.style.display === "none") outroInput.value = "";
                 });
@@ -86,16 +94,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
 
-            // ======================================================
-            // ⭐ CHECKBOX (com campo Outro)
-            // ======================================================
+            // ======================
+            //  CHECKBOX (com outro)
+            // ======================
             if (p.tipo === "checkbox") {
-
                 const container = document.createElement("div");
                 container.classList.add("checkbox-container");
 
                 p.opcoes.split(";").forEach(op => {
-
                     const item = document.createElement("label");
                     const check = document.createElement("input");
 
@@ -107,7 +113,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     item.appendChild(document.createTextNode(" " + op));
                     container.appendChild(item);
 
-                    // Campo OUTRO
+                    // OUTRO
                     if (op.includes("Outro")) {
                         const outroInput = document.createElement("input");
                         outroInput.type = "text";
@@ -117,9 +123,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         outroInput.dataset.id_pergunta = p.id_pergunta;
 
                         check.addEventListener("change", () => {
-                            outroInput.style.display = check.checked
-                                ? "block"
-                                : "none";
+                            outroInput.style.display = check.checked ? "block" : "none";
 
                             if (!check.checked) outroInput.value = "";
                         });
@@ -131,7 +135,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 form.appendChild(container);
                 return;
             }
-
         });
 
     } catch {
@@ -139,17 +142,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-
-//----------------------------------------------------------
+//--------------------------------------------------
 //  ENVIAR RESPOSTAS
-//----------------------------------------------------------
+//--------------------------------------------------
 document.getElementById("enviar-btn").addEventListener("click", async () => {
 
     const respostas = [];
     let faltando = [];
 
     //------------------------------------------------------
-    // Inputs simples (text, number, textarea)
+    // Inputs simples
     //------------------------------------------------------
     document.querySelectorAll("#form-questionario [data-id_pergunta]").forEach(el => {
 
@@ -166,7 +168,7 @@ document.getElementById("enviar-btn").addEventListener("click", async () => {
     });
 
     //------------------------------------------------------
-    // SELECT + OUTRO
+    // SELECT
     //------------------------------------------------------
     document.querySelectorAll("select[data-id_pergunta]").forEach(select => {
         const id = select.dataset.id_pergunta;
@@ -190,7 +192,7 @@ document.getElementById("enviar-btn").addEventListener("click", async () => {
     });
 
     //------------------------------------------------------
-    // CHECKBOXES agrupados
+    // CHECKBOXES
     //------------------------------------------------------
     const agrupado = {};
 
@@ -201,7 +203,6 @@ document.getElementById("enviar-btn").addEventListener("click", async () => {
         if (c.checked) agrupado[id].push(c.value);
     });
 
-    // Campo OUTRO do checkbox
     document.querySelectorAll(".outro-input").forEach(outro => {
         const id = outro.dataset.id_pergunta;
 
@@ -221,7 +222,7 @@ document.getElementById("enviar-btn").addEventListener("click", async () => {
     });
 
     //------------------------------------------------------
-    // BLOQUEAR SE FALTAR RESPOSTA
+    // BLOQUEAR SE FALTA
     //------------------------------------------------------
     if (faltando.length > 0) {
         document.getElementById("status").innerHTML =
@@ -232,11 +233,13 @@ document.getElementById("enviar-btn").addEventListener("click", async () => {
     //------------------------------------------------------
     // ENVIO AO SERVIDOR
     //------------------------------------------------------
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+
     const envio = await fetch("http://localhost:3000/questionario/salvar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            id_usuario: localStorage.getItem("id_usuario"),
+            id_usuario: usuario.id,
             respostas
         })
     });
@@ -244,6 +247,19 @@ document.getElementById("enviar-btn").addEventListener("click", async () => {
     const result = await envio.json();
     document.getElementById("status").innerText = result.mensagem;
 });
-    document.getElementById("voltar-top").addEventListener("click", () => {
+
+
+//--------------------------------------------------
+// BOTÃO SAIR
+//--------------------------------------------------
+document.getElementById("btn-sair").addEventListener("click", () => {
+    localStorage.removeItem("usuarioLogado");
+    window.location.href = "../login/login.html";
+});
+
+//--------------------------------------------------
+// BOTÃO VOLTAR
+//--------------------------------------------------
+document.getElementById("btn-voltar").addEventListener("click", () => {
     window.location.href = "../home/home.html";
 });

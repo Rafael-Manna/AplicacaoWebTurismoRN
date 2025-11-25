@@ -58,7 +58,7 @@ body {
    CONTAINER DO QUESTIONÁRIO
 ============================ */
 .container {
-    margin: 140px auto 60px auto; /* distancia da top bar */
+    margin: 50px auto 60px auto; /* distancia da top bar */
     width: 90%;
     max-width: 1100px;          /* IGUAL AO RELATÓRIO */
     background: white;
@@ -159,4 +159,65 @@ textarea {
     color: #b00000;
     font-weight: bold;
     font-size: 20px;
+}
+/* ===============================
+   TOP BAR
+================================*/
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #01534d;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,.25);
+    box-sizing: border-box;
+    z-index: 1000;
+}
+
+.logos img {
+    height: 45px;
+    margin-right: 10px;
+}
+
+.titulo-centro {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.user-area {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 18px;
+}
+
+.btn-sair,
+.btn-voltar-top {
+    background: #004c45;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-sair:hover,
+.btn-voltar-top:hover {
+    background: #003a35;
+}
+
+/* Espaço superior para o conteúdo */
+body {
+    margin: 0;
+    padding-top: 110px;
+    background: #f4f6fb;
+    font-family: Arial, sans-serif;
 }

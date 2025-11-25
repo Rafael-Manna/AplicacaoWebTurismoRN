@@ -1,38 +1,44 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Página do Usuário</title>
-<link rel="stylesheet" href="home.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="home.css">
 </head>
 
 <body>
 
-<!-- ====== TOP BAR PADRÃO ADM ====== -->
-<div class="top-bar">
-    <div class="title">Controle de Dados - Turismo RN</div>
-    <div class="logos">
-        <img src="../rn1.png">
+    <!-- 🔥 TOP BAR -->
+    <div class="top-bar">
+        <div class="logos">
+            <img src="../rn1.png">
         <img src="../uern-logo.png">
+        </div>
+
+         <div class="titarra">
+        Controle de Dados - Turismo RN
     </div>
-</div>
 
-<!-- ====== CONTEÚDO ====== -->
-<div class="container">
+        <div class="user-area">
+            <span id="nome-usuario"></span>
+            <button id="btn-sair" class="btn-sair">Sair</button>
+        </div>
+    </div>
 
-    <h1 id="titulo">Bem-vindo(a), usuário!</h1>
+    <!-- 🔥 CONTEÚDO PRINCIPAL -->
+    <div class="container">
+        <h1 id="tituloWelcome">Bem-vindo!</h1>
+        <p class="texto">Você está conectado ao sistema Turismo RN.</p>
 
-    <button id="btn-responder">Responder Questionário</button>
+        <div class="botoes">
+            <button id="btn-relatorios" class="btn">Relatórios</button>
+            <button id="btn-questionario" class="btn">Questionário</button>
+        </div>
+    </div>
 
-    <a href="../relatorios/relatorios.html" class="btn-relatorios">
-        📊 Ver Relatórios
-    </a>
-
-    <button id="btn-sair" class="btn-sair">Sair</button>
-
-</div>
-
-<script src="home.js"></script>
+    <script src="home.js"></script>
 </body>
+
 </html>

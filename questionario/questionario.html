@@ -1,38 +1,44 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Questionário - Turismo RN</title>
+    <title>Questionário</title>
     <link rel="stylesheet" href="questionario.css">
 </head>
 
 <body>
-
-    <!-- Top Bar com botão voltar -->
-    <div class="top-bar">
-        <button class="btn-voltar-top" id="voltar-top">⟵ Voltar</button>
-
-        <span class="title">Controle de Dados - Turismo RN</span>
-
-        <div class="logos">
-            <img src="../rn1.png" class="logo-img">
-            <img src="../uern-logo.png" class="logo-img">
-        </div>
+<!-- 🔥 TOP BAR -->
+<div class="top-bar">
+    <div class="logos">
+        <img src="../rn1.png">
+        <img src="../uern-logo.png">
     </div>
+
+    <div class="titulo-centro">Controle de Dados - Turismo RN</div>
+
+    <div class="user-area">
+        <button id="btn-voltar" class="btn-voltar-top">Voltar</button>
+        <span id="nome-usuario"></span>
+        <button id="btn-sair" class="btn-sair">Sair</button>
+    </div>
+</div>
 
     <div class="container">
 
-        <h1>Formulário do Estabelecimento</h1>
+        <h2>Questionário</h2>
 
         <form id="form-questionario"></form>
 
-        <button id="enviar-btn" class="btn-enviar">Enviar Respostas</button>
+        <button id="enviar-btn" class="btn-enviar">Enviar</button>
 
-        <div id="status"></div>
+        <p id="status" class="mensagem"></p>
 
     </div>
 
     <script src="questionario.js"></script>
+
 </body>
+
 </html>

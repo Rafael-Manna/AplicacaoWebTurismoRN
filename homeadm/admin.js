@@ -1,161 +1,137 @@
-// ELEMENTOS DO MODAL
-const modalBg = document.getElementById("modal-bg");
-const modalCriar = document.getElementById("modal-criar");
-const modalEditar = document.getElementById("modal-editar");
-const confirmPopup = document.getElementById("confirm-popup");
+// BLOQUEIO SEM LOGIN
+const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+if (!usuario) window.location.href = "../login/login.html";
 
-modalBg.onclick = closeAll;
+document.getElementById("nome-usuario").textContent = usuario.nome;
 
-// ===== FUNÇÕES =====
-function openModal(modal) {
-    modalBg.style.display = "block";
-    modal.style.display = "block";
-}
+document.getElementById("btn-sair").addEventListener("click", () => {
+    localStorage.removeItem("usuarioLogado");
+    window.location.href = "../login/login.html";
+});
 
-function closeAll() {
-    modalBg.style.display = "none";
-    modalCriar.style.display = "none";
-    modalEditar.style.display = "none";
-    confirmPopup.style.display = "none";
-}
+// ELEMENTOS
+const tbody = document.querySelector("#tabelaUsuarios tbody");
+const modal = document.getElementById("modal");
 
-// ===== CARREGAR USUÁRIOS =====
+const editId = document.getElementById("edit-id");
+const editNome = document.getElementById("edit-nome");
+const editEmail = document.getElementById("edit-email");
+const editSenha = document.getElementById("edit-senha");
+const editTipo = document.getElementById("edit-tipo");
+const editDesbloquear = document.getElementById("edit-desbloquear");
+
+// LISTAR USUÁRIOS
 async function carregarUsuarios() {
-    try {
-        const res = await fetch("http://localhost:3000/usuarios");
-        const data = await res.json();
+    const resp = await fetch("http://localhost:3000/admin/usuarios");
+    const dados = await resp.json();
 
-        const lista = document.getElementById("lista-usuarios");
-        lista.innerHTML = "";
+    tbody.innerHTML = "";
 
-        const placeholder = document.createElement("option");
-        placeholder.textContent = "Selecione um usuário";
-        placeholder.disabled = true;
-        placeholder.selected = true;
-        lista.appendChild(placeholder);
+    dados.forEach(u => {
+        tbody.innerHTML += `
+            <tr>
+                <td>${u.id}</td>
+                <td>${u.nome}</td>
+                <td>${u.email}</td>
+                <td>${u.tipo_conta}</td>
+                <td>${u.bloqueado ? "Sim" : "Não"}</td>
+                <td>
+                    <button class="btn-editar" data-id="${u.id}">Editar</button>
+                    <button class="btn-excluir" data-id="${u.id}">Excluir</button>
+                </td>
+            </tr>
+        `;
+    });
 
-        data.usuarios.forEach(u => {
-            const option = document.createElement("option");
-            option.value = u.id;
-            option.textContent = `${u.nome} — ${u.email}`;
-            lista.appendChild(option);
-        });
+    document.querySelectorAll(".btn-editar").forEach(btn =>
+        btn.addEventListener("click", () => abrirEdicao(btn.dataset.id))
+    );
 
-    } catch (erro) {
-        alert("Erro ao carregar usuários.");
-    }
+    document.querySelectorAll(".btn-excluir").forEach(btn =>
+        btn.addEventListener("click", () => deletarUsuario(btn.dataset.id))
+    );
 }
 
 carregarUsuarios();
 
-// ===== CRIAR =====
-document.getElementById("add-user-button").onclick = () => {
-    openModal(modalCriar);
-};
+// DELETE
+async function deletarUsuario(id) {
+    if (!confirm("Tem certeza que deseja excluir este usuário?")) return;
 
-document.getElementById("confirmar-criar").onclick = async () => {
-    const nome = document.getElementById("nome").value;
-    const email = document.getElementById("email").value;
-    const senha = document.getElementById("senha").value;
-    const tipo_conta = document.getElementById("tipo_conta").value;
-
-    const res = await fetch("http://localhost:3000/criar-usuario", {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({nome, email, senha, tipo_conta})
+    await fetch(`http://localhost:3000/admin/usuarios/${id}`, {
+        method: "DELETE"
     });
 
-    alert((await res.json()).mensagem);
-    closeAll();
     carregarUsuarios();
-};
+}
 
-// ===== FLAGS “NÃO ALTERAR” =====
-let alterarNome = true;
-let alterarEmail = true;
-let alterarSenha = true;
-let alterarTipo = true;
+// ABRIR MODAL EDITAR
+async function abrirEdicao(id) {
+    const resp = await fetch("http://localhost:3000/admin/usuarios");
+    const lista = await resp.json();
+    const user = lista.find(u => u.id == id);
 
-// ===== BOTÕES “NÃO ALTERAR” =====
-document.getElementById("no-edit-nome").onclick = () => {
-    const campo = document.getElementById("edit-nome");
-    alterarNome = !alterarNome;
-    campo.classList.toggle("input-disabled", !alterarNome);
-};
+    document.getElementById("modal-titulo").textContent = "Editar Usuário";
 
-document.getElementById("no-edit-email").onclick = () => {
-    const campo = document.getElementById("edit-email");
-    alterarEmail = !alterarEmail;
-    campo.classList.toggle("input-disabled", !alterarEmail);
-};
+    editId.value = user.id;
+    editNome.value = user.nome;
+    editEmail.value = user.email;
+    editSenha.value = "";
+    editTipo.value = user.tipo_conta;
+    editDesbloquear.checked = user.bloqueado === 1;
 
-document.getElementById("no-edit-senha").onclick = () => {
-    const campo = document.getElementById("edit-senha");
-    alterarSenha = !alterarSenha;
-    campo.classList.toggle("input-disabled", !alterarSenha);
-};
+    modal.style.display = "flex";
+}
 
-document.getElementById("no-edit-tipo").onclick = () => {
-    const campo = document.getElementById("edit-tipo");
-    alterarTipo = !alterarTipo;
-    campo.classList.toggle("input-disabled", !alterarTipo);
-};
+// ABRIR MODAL CRIAR
+document.getElementById("btn-criar").addEventListener("click", () => {
+    document.getElementById("modal-titulo").textContent = "Criar Usuário";
 
-// ===== EDITAR =====
-document.getElementById("edit-user-button").onclick = () => {
-    openModal(modalEditar);
-};
+    editId.value = "";
+    editNome.value = "";
+    editEmail.value = "";
+    editSenha.value = "";
+    editTipo.value = "usuario";
+    editDesbloquear.checked = false;
 
-document.getElementById("salvar-edicao").onclick = async () => {
-    const id = document.getElementById("lista-usuarios").value;
+    modal.style.display = "flex";
+});
 
-    const usuarioAtualizado = {};
+// CANCELAR
+document.getElementById("btn-cancelar").addEventListener("click", () => {
+    modal.style.display = "none";
+});
 
-    if (alterarNome) usuarioAtualizado.nome = document.getElementById("edit-nome").value;
-    if (alterarEmail) usuarioAtualizado.email = document.getElementById("edit-email").value;
+// SALVAR
+document.getElementById("btn-salvar").addEventListener("click", async () => {
 
-    if (alterarSenha) {
-        const novaSenha = document.getElementById("edit-senha").value.trim();
-        if (novaSenha !== "") usuarioAtualizado.senha = novaSenha;
-    }
+    const id = editId.value;
 
-    if (alterarTipo) usuarioAtualizado.tipo_conta = document.getElementById("edit-tipo").value;
-
-    usuarioAtualizado.desbloquear = document.getElementById("edit-desbloquear").checked;
-
-    const res = await fetch(`http://localhost:3000/usuarios/${id}`, {
-        method: "PUT",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify(usuarioAtualizado)
-    });
-
-    alert((await res.json()).mensagem);
-    closeAll();
-    carregarUsuarios();
-
-    alterarNome = alterarEmail = alterarSenha = alterarTipo = true;
-
-    document.getElementById("edit-nome").classList.remove("input-disabled");
-    document.getElementById("edit-email").classList.remove("input-disabled");
-    document.getElementById("edit-senha").classList.remove("input-disabled");
-    document.getElementById("edit-tipo").classList.remove("input-disabled");
-};
-
-// ===== REMOVER =====
-document.getElementById("remove-user-button").onclick = () => {
-    openModal(confirmPopup);
-
-    document.getElementById("confirm-sim").onclick = async () => {
-        const id = document.getElementById("lista-usuarios").value;
-
-        const res = await fetch(`http://localhost:3000/usuarios/${id}`, {
-            method: "DELETE"
-        });
-
-        alert((await res.json()).mensagem);
-        closeAll();
-        carregarUsuarios();
+    const body = {
+        nome: editNome.value,
+        email: editEmail.value,
+        tipo_conta: editTipo.value,
+        desbloquear: editDesbloquear.checked ? 1 : 0
     };
 
-    document.getElementById("confirm-nao").onclick = closeAll;
-};
+    if (editSenha.value.trim() !== "") {
+        body.senha = editSenha.value;
+    }
+
+    if (id) {
+        await fetch(`http://localhost:3000/admin/usuarios/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+    } else {
+        await fetch(`http://localhost:3000/admin/usuarios`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+    }
+
+    modal.style.display = "none";
+    carregarUsuarios();
+});

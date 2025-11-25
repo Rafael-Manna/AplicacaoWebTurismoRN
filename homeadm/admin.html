@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,96 +10,79 @@
 
 <body>
 
-    <!-- BARRA SUPERIOR -->
+    <!-- 🔥 TOP BAR -->
     <div class="top-bar">
-        <span class="title">Controle de Dados - Turismo RN</span>
-
         <div class="logos">
-            <img src="../rn1.png" alt="Logo RN" class="logo-img">
-            <img src="../uern-logo.png" alt="Logo UERN" class="logo-img">
+            <img src="../rn1.png">
+            <img src="../uern-logo.png">
+        </div>
+        <div class="title">Controle de Dados – Turismo RN</div>
+
+        <div class="user-area">
+            <span id="nome-usuario"></span>
+            <button id="btn-sair" class="btn-sair">Sair</button>
         </div>
     </div>
 
-    <!-- CONTEÚDO PRINCIPAL -->
-    <div class="content">
+    <div class="container">
 
-      <h1>Gerenciamento de Usuários</h1>
-        <div id="baubau">
+        <h2>Gerenciamento de Usuários</h2>
 
-        <h2>Adicionar novo Usuário</h2>
-        <button id="add-user-button">Adicionar</button>
+        <table id="tabelaUsuarios">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Tipo</th>
+                    <th>Bloqueado</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
 
-        <h2>Lista de Usuários</h2>
-        <select id="lista-usuarios"></select><br>
-
-        <button id="edit-user-button">Editar Usuário</button>
-        <button id="remove-user-button">Remover Usuário</button>
-
+        <!-- BOTÃO CENTRALIZADO -->
+        <div class="btn-center">
+            <button id="btn-criar" class="btn-criar">+ Criar Usuário</button>
         </div>
+
     </div>
 
-    <!-- FUNDO ESCURECIDO -->
-    <div id="modal-bg" class="modal-background"></div>
+    <!-- 🔥 MODAL -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-titulo">Editar Usuário</h3>
 
-    <!-- MODAL CRIAR -->
-    <div id="modal-criar" class="modal">
-        <h2>Criar Usuário</h2>
+            <input type="hidden" id="edit-id">
 
-        <input id="nome" placeholder="Nome completo">
-        <input id="email" placeholder="Email">
-        <input id="senha" placeholder="Senha">
+            <label>Nome:</label>
+            <input type="text" id="edit-nome">
 
-        <select id="tipo_conta">
-            <option value="usuario">Usuário</option>
-            <option value="admin">Administrador</option>
-        </select>
+            <label>Email:</label>
+            <input type="email" id="edit-email">
 
-        <button id="confirmar-criar">Criar</button>
-    </div>
+            <label>Senha (opcional):</label>
+            <input type="password" id="edit-senha" placeholder="Não altera se vazio">
 
-    <!-- MODAL EDITAR -->
-    <div id="modal-editar" class="modal">
-        <h2>Editar Usuário</h2>
-
-        <label>Nome:</label>
-        <div class="edit-row">
-            <input id="edit-nome" placeholder="Nome">
-            <button class="no-edit-btn" id="no-edit-nome">Não alterar</button>
-        </div>
-
-        <label>Email:</label>
-        <div class="edit-row">
-            <input id="edit-email" placeholder="Email">
-            <button class="no-edit-btn" id="no-edit-email">Não alterar</button>
-        </div>
-
-        <label>Senha:</label>
-        <div class="edit-row">
-            <input id="edit-senha" placeholder="Deixar vazio para não alterar" type="password">
-            <button class="no-edit-btn" id="no-edit-senha">Não alterar</button>
-        </div>
-
-        <label>Tipo de Conta:</label>
-        <div class="edit-row">
+            <label>Tipo da Conta:</label>
             <select id="edit-tipo">
                 <option value="usuario">Usuário</option>
-                <option value="admin">Administrador</option>
+                <option value="adm">Administrador</option>
             </select>
-            <button class="no-edit-btn" id="no-edit-tipo">Não alterar</button>
+
+            <label class="checkline">
+               Desbloquear usuário <input type="checkbox" id="edit-desbloquear"> 
+            </label>
+
+            <div class="modal-buttons">
+                <button id="btn-salvar" class="btn confirmar">Salvar</button>
+                <button id="btn-cancelar" class="btn cancelar">Cancelar</button>
+            </div>
         </div>
-
-        <label class="checkbox-row"> Desbloquear usuário <input type="checkbox" id="edit-desbloquear"></label><br>
-
-        <button id="salvar-edicao">Salvar Alterações</button>
-    </div>
-
-    <!-- POPUP CONFIRMAÇÃO -->
-    <div id="confirm-popup" class="confirm-popup">
-        <h3>Tem certeza?</h3>
-        <button class="btn-sim" id="confirm-sim">Sim</button>
-        <button class="btn-nao" id="confirm-nao">Não</button>
     </div>
 
     <script src="admin.js"></script>
 </body>
+
 </html>

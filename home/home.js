@@ -1,27 +1,41 @@
-// Impedir acesso sem login
+//--------------------------------------------------
+// BLOQUEAR QUEM NÃO ESTÁ LOGADO OU ADM NA HOME NORMAL
+//--------------------------------------------------
+const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+
+if (!usuario) {
+    window.location.href = "../login/login.html";
+} 
+else if (usuario.tipo_conta === "adm") {
+    window.location.href = "../homeadm/admin.html";
+}
+
+//--------------------------------------------------
+// MOSTRAR NOME DO USUÁRIO
+//--------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
-    const nome = localStorage.getItem("nome_usuario");
-    const id = localStorage.getItem("id_usuario");
-    const titulo = document.getElementById("titulo");
+    const campoNome = document.getElementById("nome-usuario");
 
-    if (!id) {
-        alert("Você precisa estar logado!");
-        window.location.href = "../login/login.html";
-        return;
-    }
-
-    if (nome) {
-        titulo.textContent = `Bem-vindo(a), ${nome}!`;
+    if (campoNome && usuario) {
+        campoNome.textContent = usuario.nome;
     }
 });
 
-// Botão para responder questionário
-document.getElementById("btn-responder").addEventListener("click", () => {
+//--------------------------------------------------
+// BOTÕES
+//--------------------------------------------------
+document.getElementById("btn-questionario")?.addEventListener("click", () => {
     window.location.href = "../questionario/questionario.html";
 });
 
-// Botão para sair
-document.getElementById("btn-sair").addEventListener("click", () => {
-    localStorage.clear();
+document.getElementById("btn-relatorios")?.addEventListener("click", () => {
+    window.location.href = "../relatorios/relatorios.html";
+});
+
+//--------------------------------------------------
+// BOTÃO SAIR
+//--------------------------------------------------
+document.getElementById("btn-sair")?.addEventListener("click", () => {
+    localStorage.removeItem("usuarioLogado");
     window.location.href = "../login/login.html";
 });

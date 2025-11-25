@@ -1,186 +1,175 @@
-/* ===========================
-   BARRA SUPERIOR
-   =========================== */
+body {
+    background-color: #f4f6fb;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
 
+/* =============== TOP BAR =============== */
 .top-bar {
-    
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    background: #005c56;
-    padding: 12px 25px;
+    background-color: #01534d;
+    padding: 15px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,.25);
     color: white;
+    font-size: 20px;
     font-weight: bold;
-    flex-wrap: wrap;
-    box-sizing: border-box;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .25);
+        box-sizing: border-box;
 
+}
+
+.logos img {
+    height: 60px;
+    margin-right: 10px;
 }
 
 .title {
     font-size: 22px;
 }
 
-.logo-img {
-    height: 60px;
-}
-
-.logos {
+.user-area {
     display: flex;
-    gap: 18px;
     align-items: center;
+    gap: 20px;
 }
 
-/* ===========================
-   CONTEÚDO
-   =========================== */
-
-body {
-    margin: 0;
-    background: #f4f6fb;
-    font-family: Arial, sans-serif;
+.btn-sair {
+    background: #004c45;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
 }
 
-.content {
+.btn-sair:hover {
+    background: #003a35;
+}
+
+/* =============== CONTAINER =============== */
+
+.container {
+    margin-top: 140px;
+    background: white;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
     padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px #00000020;
 }
 
-h1 {
-    font-size: 50px;
+h2 {
+    text-align: center;
     color: #014642;
-    max-width: 600px;
-    margin: 20px auto;
+}
+
+/* =============== TABELA =============== */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+}
+
+th {
+    background: #01534d;
+    color: white;
+    padding: 12px;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
     text-align: center;
 }
 
-#baubau {
-    zoom: 1.2;
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 280px;
-    margin: 0 auto;
-    box-shadow: 0 0 12px rgba(0,0,0,0.2);
+tr:nth-child(even) {
+    background: #f4fbfa;
 }
 
-#lista-usuarios {
-    padding: 10px;
-    width: 260px;
-    border-radius: 6px;
-    margin-bottom: 15px;
+/* =============== BOTÃO CENTRAL =============== */
+
+.btn-center {
+    display: flex;
+    justify-content: center;
+    margin-top: 25px;
 }
 
-button {
-    padding: 10px 16px;
-    background: #005c56;
+.btn-criar {
+    background: #01534d;
     color: white;
+    padding: 12px 25px;
+    border-radius: 10px;
     border: none;
-    border-radius: 6px;
+    font-size: 16px;
     cursor: pointer;
-    transition: 0.2s;
 }
 
-button:hover {
-    background: #003f3a;
+.btn-criar:hover {
+    background-color: #013d38;
 }
 
-/* ===========================
-   MODAIS
-   =========================== */
+/* =============== MODAL =============== */
 
-.modal-background {
+.modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.55);
-    z-index: 900;
+    background: rgba(0, 0, 0, 0.55);
     display: none;
+    justify-content: center;
+    align-items: center;
 }
 
-.modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+.modal-content {
     background: white;
-    width: 350px;
     padding: 25px;
-    border-radius: 10px;
-    z-index: 999;
-    display: none;
-    box-shadow: 0 0 15px rgba(0,0,0,.3);
+    width: 350px;
+    border-radius: 12px;
 }
 
-.modal input,
-.modal select {
-    width: 100%;
-    padding: 12px;
-    border-radius: 6px;
+.modal-content label {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.modal-content input,
+.modal-content select {
+    width: 92%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 20px;
     border: 1px solid #ccc;
-    margin: 10px 0;
-    box-sizing: border-box;
+    border-radius: 6px;
 }
 
-/* BOTÕES “NÃO ALTERAR” */
-
-.edit-row {
+.modal-buttons {
     display: flex;
-    gap: 10px;
-    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
 }
 
-.no-edit-btn {
-    background: #c0392b;
-    padding: 8px 10px;
+.btn {
+    padding: 10px 18px;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.confirmar {
+    background-color: #01534d;
     color: white;
-    border-radius: 6px;
 }
 
-.no-edit-btn:hover {
-    background: #9e3024;
-}
-
-.input-disabled {
-    background: #e5e5e5 !important;
-    pointer-events: none;
-    opacity: 0.7;
-}
-
-.checkbox-row {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-/* POPUP CONFIRMAÇÃO */
-
-.confirm-popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    width: 320px;
-    padding: 20px;
-    border-radius: 10px;
-    z-index: 1001;
-    display: none;
-}
-
-.btn-sim {
-    background: #d62828;
-    padding: 10px;
-    width: 45%;
-    border-radius: 6px;
-}
-
-.btn-nao {
-    background: #005c56;
-    padding: 10px;
-    width: 45%;
-    border-radius: 6px;
+.cancelar {
+    background-color: #aaa;
+    color: white;
 }

@@ -1,23 +1,22 @@
-/* ============================
+/* ===========================
    TOP BAR
-============================ */
+=========================== */
 .top-bar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     background-color: #01534d;
-    padding: 15px 40px;
+    padding: 15px 35px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     color: white;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: bold;
     box-shadow: 0 2px 5px rgba(0,0,0,.25);
     z-index: 1000;
-        box-sizing: border-box;
-
+    box-sizing: border-box;
 }
 
 .btn-voltar-top {
@@ -33,90 +32,128 @@
     background: #003a35;
 }
 
-.logo-img {
-    height: 60px;
+.nome-usuario {
+    font-size: 18px;
+    font-weight: normal;
+    opacity: 0.9;
 }
 
-.logos {
-    display: flex;
-    gap: 15px;
-}
-
-/* ============================
-   FUNDO
-============================ */
+/* ===========================
+   CONTEÚDO PRINCIPAL
+=========================== */
 body {
     margin: 0;
     background: #f4f6fb;
     font-family: Arial, sans-serif;
 }
 
-.content {
-    margin-top: 60px;
+.container {
+    margin-top: 90px;
     padding: 20px;
-    text-align: center;
 }
 
-h1 {
+.titulo {
+    text-align: center;
     color: #014642;
 }
 
-/* ============================
-   SCROLL DA TABELA
-============================ */
-.tabela-wrapper {
+/* SELECT + BOTÃO */
+.select-area {
+    display: flex;
+    gap: 10px;
+    margin: 20px auto;
     width: 100%;
+    max-width: 600px;
+    align-items: center;
+}
+
+select {
+    padding: 10px;
+    font-size: 16px;
+    flex: 1;
+}
+
+#btnCarregar {
+    padding: 10px 20px;
+    background-color: #01534d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+#btnCarregar:hover {
+    background-color: #013c38;
+}
+
+/* ===========================
+   TABELA PADRÃO
+=========================== */
+.tabela-relatorio {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+}
+
+.tabela-relatorio th {
+    background: #01534d;
+    color: white;
+    padding: 10px;
+    border: 1px solid #003a35;
+}
+
+.tabela-relatorio td {
+    padding: 8px 10px;
+    border: 1px solid #c2c2c2;
+}
+
+/* ===========================
+   TABELA TIPO EXCEL (QUESTIONÁRIO)
+=========================== */
+
+.tabela-wrapper {
     overflow-x: auto;
     padding-bottom: 10px;
 }
 
-/* ============================
-   TABELA ESTILO EXCEL — CORES ANTIGAS
-============================ */
 .tabela-excel {
     width: max-content;
     border-collapse: collapse;
     background: white;
-    font-size: 14px;
     border: 1px solid #cfd8dc;
     min-width: 900px;
+    font-size: 14px;
 }
 
-/* Cabeçalho verde escuro */
-.tabela-excel thead th {
+.tabela-excel th {
     background: #01534d;
     color: #fff;
     padding: 10px;
     border: 1px solid #0d3a36;
     text-align: center;
-    font-weight: bold;
-
-    white-space: normal;
-    word-break: break-word;
-    max-width: 180px;
 }
 
-/* Linhas alternadas */
-.tabela-excel tbody tr:nth-child(even) {
-    background: #f1f7f7;
-}
-.tabela-excel tbody tr:nth-child(odd) {
-    background: #ffffff;
-}
-
-/* Células */
 .tabela-excel td {
     border: 1px solid #cfd8dc;
-    padding: 8px 10px;
-    text-align: center;
-    vertical-align: middle;
-
-    white-space: normal;
-    word-break: break-word;
-    max-width: 180px;
+    padding: 8px;
 }
 
-/* Hover */
-.tabela-excel tbody tr:hover {
-    background: #e3f1ef;
+/* ===========================
+   GRÁFICO
+=========================== */
+.grafico-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 40px auto;
+}
+
+
+
+
+
+
+.tabela-excel,
+.tabela-relatorio {
+    margin: 0 auto; /* centraliza */
+    
 }

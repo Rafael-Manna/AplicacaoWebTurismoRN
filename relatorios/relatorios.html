@@ -1,30 +1,76 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatórios</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="relatorios.css">
 </head>
+
 <body>
 
+    <!-- =============================== -->
+    <!-- 🔥 TOP BAR IGUAL AO QUESTIONÁRIO -->
+    <!-- =============================== -->
     <div class="top-bar">
-        <button class="btn-voltar-top" id="voltar-top">⟵ Voltar</button>
+        <button class="btn-voltar-top" onclick="window.location.href='../home/home.html'">Voltar</button>
 
-        <div class="title">Controle de Dados - Turismo RN</div>
-
-        <div class="logos">
-            <img src="../rn1.png" class="logo-img">
-            <img src="../uern-logo.png" class="logo-img">
-        </div>
+ <div class="titulo-centro">Controle de Dados - Turismo RN</div>
+ 
+        <span id="nomeUsuario" class="nome-usuario"></span>
     </div>
 
-    <div class="content">
-        <h1>📊 Relatórios – Tabela Completa</h1>
+    <div class="container">
+        <h2 class="titulo">Relatórios Avançados</h2>
+
+        <div class="select-area">
+            <label for="tipoRelatorio">Selecione o relatório:</label>
+            <select id="tipoRelatorio">
+                <option value="">Selecione...</option>
+
+                <option value="questionario">Respostas do Questionário (Planilha)</option>
+
+                <option value="pesquisas-em-andamento">Pesquisas em Andamento</option>
+                <option value="membros-equipe">Membros de Equipe por Pesquisa</option>
+
+                <option value="tarefas-pendentes">Tarefas Pendentes por Equipe</option>
+                <option value="produtividade">Produtividade dos Pesquisadores</option>
+
+                <option value="estabelecimentos-localizacao">Estabelecimentos por Localização</option>
+                <option value="contato-completo">Estabelecimentos com Contato Completo</option>
+
+                <option value="pcd">Acessibilidade (PCD)</option>
+
+                <option value="perfil-proprietarios">Perfil dos Proprietários</option>
+                <option value="empregos-tipo">Empregos Gerados por Tipo</option>
+
+                <option value="levantamentos-revisao">Levantamentos com Pendências</option>
+                <option value="estabelecimentos-incompletos">Estabelecimentos Incompletos</option>
+
+                <option value="completo-estabelecimento">Relatório Completo de Estabelecimento</option>
+                <option value="estatisticas-uso">Estatísticas do Sistema</option>
+
+                <option value="periodo-funcionamento">Período de Funcionamento</option>
+                <option value="capacidade-media">Capacidade Média</option>
+                <option value="certificados">Certificações</option>
+                <option value="sinalizacao-turistica">Sinalização Turística</option>
+            </select>
+
+            <button id="btnCarregar">Carregar</button>
+        </div>
 
         <div id="conteudo"></div>
-        <p id="status"></p>
+
+        <div class="grafico-container">
+            <canvas id="grafico"></canvas>
+        </div>
+
     </div>
 
-<script src="relatorios.js"></script>
+    <script src="relatorios.js"></script>
+
 </body>
 </html>
