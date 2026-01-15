@@ -3,7 +3,7 @@
 Este projeto foi desenvolvido como parte de uma atividade acadêmica da Universidade do Estado do Rio Grande do Norte (UERN).
 O sistema tem como objetivo realizar a gestão de dados turísticos do Rio Grande do Norte (RN), utilizando tecnologias modernas para armazenamento e manipulação das informações.
 
-📹 Video do projeto da 
+📹 Video da aplicação em funcionamento 
 https://youtu.be/QwF1VB-FDvA?feature=shared
 
 🚀 Tecnologias Utilizadas
