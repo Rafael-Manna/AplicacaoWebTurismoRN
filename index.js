@@ -243,7 +243,7 @@ app.get("/", (req, res) => {
 });
 
 // ============================================================
-// 👤 LOGIN (MANTIDO IGUAL AO SEU SISTEMA ANTIGO)
+// 👤 LOGIN 
 // ============================================================
 app.post("/login", (req, res) => {
   const { email, senha } = req.body;
@@ -390,7 +390,7 @@ app.put("/admin/usuarios/desbloquear/:id", (req, res) => {
 });
 
 // ============================================================
-// 👤 CRUD DE USUÁRIOS (MANTIDO IGUAL AO SEU)
+// 👤 CRUD DE USUÁRIOS 
 // ============================================================
 app.post("/criar-usuario", (req, res) => {
   const { nome, email, senha, tipo_conta } = req.body;
@@ -522,7 +522,7 @@ app.post("/questionario/salvar", (req, res) => {
 });
 
 // ============================================================
-// 📊 RELATÓRIO BÁSICO (SEU ANTIGO)
+// 📊 RELATÓRIO BÁSICO
 // ============================================================
 app.get("/relatorios", (req, res) => {
     const sql = `
